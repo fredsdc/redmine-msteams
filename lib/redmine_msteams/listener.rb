@@ -24,7 +24,7 @@ module RedmineMsteams
       msg.addFacts(nil,facts)
       #msg.addAction('Issue',"#{object_url issue}")
 
-      msg.send(url,true)
+      teams_send(issue,msg,url)
     end
 
     def controller_issues_edit_after_save(context={})
@@ -44,7 +44,7 @@ module RedmineMsteams
 
       msg=TeamsMessage.new(text,title)
       msg.addFacts(factsTitle,facts)
-      msg.send(url,true)
+      teams_send(issue,msg,url)
     end
 
     def model_changeset_scan_commit_for_issue_ids_pre_issue_update(context={})
@@ -92,7 +92,7 @@ module RedmineMsteams
 
       msg=TeamsMessage.new(text,title)
       msg.addFacts(factsTitle,facts)
-      msg.send(url,true)
+      teams_send(issue,msg,url)
     end
 
     def controller_wiki_edit_after_save(context = { })
@@ -113,10 +113,32 @@ module RedmineMsteams
       end
 
       msg=TeamsMessage.new(comment,title)
-      msg.send(url,true)
+      teams_send(nil,msg,url)
     end
 
   private
+
+    def teams_send(issue,msg,url)
+      url=url.split(",")
+      temp_issue=issue.serializable_hash.map{|i, j| [i.to_s, j.to_s]}
+      temp=[]
+      urls=[]
+      i=url.count - 1
+      while i >= 0
+        if url[i].starts_with?("http")
+          if issue.nil? && !temp.present? || (temp & temp_issue).sort == temp.sort
+            urls+=[url[i]]
+          end
+          temp=[]
+          i -= 1
+        else
+          temp+=[[url[i-1], url[i]]]
+          i -= 2
+        end
+      end
+      urls.uniq.each { |u| msg.send(u,true) }
+    end
+
     def get_facts(journal)
       facts = {}
       journal.details.map { |d| facts.merge!(detail_to_field d) }
