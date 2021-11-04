@@ -126,7 +126,7 @@ module RedmineMsteams
       i=url.count - 1
       while i >= 0
         if url[i].starts_with?("http")
-          if issue.nil? && !temp.present? || (temp & temp_issue).sort == temp.sort
+          if issue.nil? && !temp.present? ||(temp & temp_issue).map{|x| x[0]}.uniq.sort == temp.map{|x| x[0]}.uniq.sort
             urls+=[url[i]]
           end
           temp=[]
