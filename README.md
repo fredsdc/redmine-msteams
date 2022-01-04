@@ -1,6 +1,6 @@
 # Microsoft Teams chat plugin for Redmine
 
-This plugin posts updates to issues and wiki pages in your Redmine installation to a Microsoft Teams channel. 
+This plugin posts updates to issues and wiki pages in your Redmine installation to a Microsoft Teams channel.
 
 The code is heavily based on the [redmine-slack](https://github.com/sciyoshi/redmine-slack) plugin from [sciyoshi](https://github.com/sciyoshi).
 So if you prefer Slack over MS Teams just use his plugin!
@@ -34,6 +34,18 @@ do this, create a project custom field (Administration > Custom fields > Project
 named `Teams URL`. If no custom channel is defined for a project, the parent
 project will be checked (or the default will be used). To prevent all notifications
 from being sent for a project, set the custom channel URL to `-` (or anything not empty and not starting with `http`).
+
+On Teams, left click on channel > connectors > Incoming Webhook and configure a teams url
+
+### (New) Filters
+
+Set the Teams URL like:
+
+    <teams url>[,<issue field>,<value>]...
+
+Where [] are your filters, they all should match. Example:
+
+    https://<teams_url>,project_id,1,tracker_id,1
 
 ## Missing Features / Work in progress
 
